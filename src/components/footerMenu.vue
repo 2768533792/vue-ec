@@ -1,6 +1,25 @@
 <template>
   <footer>
-    
+    <div>
+      <div class="icon-wrapper"></div>
+      <div class="txt">首页</div>
+    </div>
+    <div>
+      <div class="icon-wrapper"></div>
+      <div class="txt">首页</div>
+    </div>
+    <div>
+      <div class="icon-wrapper"></div>
+      <div class="txt">首页</div>
+    </div>
+    <div>
+      <div class="icon-wrapper"></div>
+      <div class="txt">首页</div>
+    </div>
+    <div>
+      <div class="icon-wrapper"></div>
+      <div class="txt">首页</div>
+    </div>
   </footer>
 </template>
 
