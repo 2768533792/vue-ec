@@ -54,7 +54,9 @@
       <swiper-goods :data="swiperGoods3"></swiper-goods>
       <brands></brands>
       <one-pic :pic="adPic01"></one-pic>
+      <goods-floor2 :goods="goodsList"></goods-floor2>
     </div>
+    <footer-menu></footer-menu>
   </div>
 </template>
 
@@ -64,6 +66,8 @@ import seckill from '@/components/seckill'
 import onePic from '@/components/onePic'
 import swiperGoods from '@/components/swiperGoods'
 import brands from '@/components/brands'
+import goodsFloor2 from '@/components/goodsFloor2'
+import footerMenu from '@/components/footerMenu'
 
 export default {
   data () {
@@ -93,7 +97,8 @@ export default {
       adPic01: {
         href: '#4',
         img: require('@/assets/images/ad-pic3.jpg')
-      }
+      },
+      goodsList: []
     }
   },
   created () {
@@ -111,6 +116,7 @@ export default {
           this.swiperGoods1.goods = data.slice(1, 18)
           this.swiperGoods2.goods = data.slice(19, 36)
           this.swiperGoods3.goods = data.slice(37, 50)
+          this.goodsList = data.slice(1, 7)
         })
     }
   },
@@ -119,7 +125,9 @@ export default {
     seckill,
     onePic,
     swiperGoods,
-    brands
+    brands,
+    goodsFloor2,
+    footerMenu
   }
 }
 </script>

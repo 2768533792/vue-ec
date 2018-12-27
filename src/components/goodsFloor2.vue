@@ -42,10 +42,10 @@ export default {
         .item {
           box-sizing: border-box;
           padding: 0 2% 10px;
-          width: 50%;
+          width: 33%;
           .img-wrapper {
             color: #ccc;
-            height: 170px;
+            height: 110px;
             width: 100%;
             overflow: hidden;
             border-radius: 5px;
