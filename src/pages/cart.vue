@@ -1,6 +1,11 @@
 <template>
   <div class="cart">
-    <header class="header">购物车<span class="btn-edit" @click="edit" v-if="editStatus">完成</span><span class="btn-edit" @click="edit" v-else>编辑</span></header>
+    <header class="header">
+      <router-link :to="{path: '/'}" class="header-left" ><i class="icon-back"></i></router-link>
+      购物车
+      <span class="btn-edit" @click="edit" v-if="editStatus">完成</span>
+      <span class="btn-edit" @click="edit" v-else>编辑</span>
+    </header>
     <section class="container container-cart">
       <div class="cart-list">
         <div class="cart-item" v-for="(item, index) in list" :key="index">

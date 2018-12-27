@@ -29,10 +29,12 @@
         </div>
       </div>
     </section>
+    <footer-menu></footer-menu>
   </div>
 </template>
 
 <script>
+
 export default {
   data () {
     return {

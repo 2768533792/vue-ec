@@ -8,3 +8,24 @@ body {
 .swiper-pagination-bullet-active {
   background-color: #2fc86d;
 }
+.header {
+  text-align: center;
+  height: 42px;
+  line-height: 42px;
+  background-color: white;
+  border-bottom: 1px solid #eee;
+}
+.header-left {
+  position: absolute;
+  left: 10px;
+  display: block;
+}
+.icon-back {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background: url('~@/assets/images/icon-back.png') no-repeat center center;
+  -webkit-background-size: contain;
+     -moz-background-size: contain;
+          background-size: contain;
+}

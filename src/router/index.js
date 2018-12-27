@@ -46,8 +46,8 @@ export default new Router({
       component: member,
       children: [
         {
-          path: '',
-          name: 'memberIndex',
+          path: '/',
+          name: 'member',
           component: memberIndex
         },
         {
@@ -72,6 +72,10 @@ export default new Router({
           props: true
         }
       ]
+    },
+    {
+      path: '*',
+      redirect: '/'
     }
   ]
 })

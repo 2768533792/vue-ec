@@ -1,29 +1,29 @@
 <template>
   <div class="footer-wrapper">
     <footer class="footer-menu">
-      <div class="menu-item active">
+      <router-link :to="{name: 'home'}" class="menu-item">
         <i class="menu-icon1"></i>
         <div class="txt">首页</div>
-      </div>
-      <div class="menu-item">
+      </router-link>
+      <router-link :to="{name: 'category'}" class="menu-item">
         <i class="menu-icon2"></i>
         <div class="txt">分类</div>
-      </div>
+      </router-link>
       <div class="menu-item">
       </div>
-      <div class="menu-item">
+      <router-link :to="{name: 'cart'}" class="menu-item">
         <i class="menu-icon3"></i>
         <div class="txt">购物车</div>
-      </div>
-      <div class="menu-item">
+      </router-link>
+      <router-link :to="{name: 'member'}" class="menu-item">
         <i class="menu-icon4"></i>
         <div class="txt">我的</div>
-      </div>
+      </router-link>
     </footer>
-    <div class="middle">
+    <router-link :to="{name: 'category'}" class="middle">
       <i class="menu-icon-middle"></i>
       <div class="txt">发现</div>
-    </div>
+    </router-link>
   </div>
 </template>
 
@@ -81,9 +81,18 @@ export default {
         color: #999;
         font-size: 10px;
       }
-      &.active {
+      &.router-link-exact-active {
         .menu-icon1 {
           background-image: url(~@/assets/images/menu-icon1-on.png)
+        }
+        .menu-icon2 {
+          background-image: url(~@/assets/images/menu-icon2-on.png)
+        }
+        .menu-icon3 {
+          background-image: url(~@/assets/images/menu-icon3-on.png)
+        }
+        .menu-icon4 {
+          background-image: url(~@/assets/images/menu-icon4-on.png)
         }
         .txt {
           color: #333;

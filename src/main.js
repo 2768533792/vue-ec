@@ -8,11 +8,18 @@ import 'swiper/dist/css/swiper.css'
 import '@/assets/styles/common.scss'
 import '@/assets/iconfont/iconfont.css'
 import VueAwesomeSwiper from 'vue-awesome-swiper'
-import {result} from '@/assets/js/es6'
 import axios from 'axios'
 
+import footerMenu from '@/components/footerMenu/index'
+
 Vue.use(VueAwesomeSwiper)
+Vue.use(footerMenu)
 Vue.prototype.$ajax = axios
+
+Vue.prototype.goBack = function () {
+  // window.history.go(-1) // 返回的第一种方法
+  router.back() // 第二种
+}
 
 Vue.config.productionTip = false
 
@@ -20,9 +27,8 @@ Vue.config.productionTip = false
 new Vue({
   el: '#app',
   router,
-  created () {
-    console.log(result)
+  components: {
+    App
   },
-  components: { App },
   template: '<App/>'
 })

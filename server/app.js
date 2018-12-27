@@ -14,34 +14,7 @@ var usersRouter = require('./routes/users');
 var loginRouter = require('./routes/login');
 var brandsRouter = require('./routes/brands');
 var itemsRouter = require('./routes/items');
-
-// var brandsRouter = router.get('/', function(req, res, next) {
-//   var res = res
-//   var req = req
-//   var sql = "select brand_name, brand_logo image_default_id from syscategory_brand"
-//   connection.query(sql, function(err, rows, fields) {
-//     if (err) {
-//       console.log('[query] - :' + err)
-//       return
-//     }
-//     console.log(rows)
-//     res.send(rows)
-//   })
-// });
-
-// var itemsRouter = router.get('/', function(req, res, next) {
-//   var res = res
-//   var req = req
-//   var sql = "select item_id, shop_id, title, sub_title, price, mkt_price, image_default_id from sysitem_item"
-//   connection.query(sql, function(err, rows, fields) {
-//     if (err) {
-//       console.log('[query] - :' + err)
-//       return
-//     }
-//     console.log(rows)
-//     res.send(rows)
-//   })
-// })
+var catRouter = require('./routes/category');
 
 var app = express();
 
@@ -66,6 +39,7 @@ app.use('/users', usersRouter);
 app.use('/login', loginRouter);
 app.use('/items', itemsRouter);
 app.use('/brands', brandsRouter);
+app.use('/category', catRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

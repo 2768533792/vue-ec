@@ -23,10 +23,12 @@
         </ul>
       </div>
     </section>
+    <footer-menu></footer-menu>
   </div>
 </template>
 
 <script>
+
 import BScroll from 'better-scroll'
 export default {
   data () {

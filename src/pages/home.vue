@@ -67,7 +67,6 @@ import onePic from '@/components/onePic'
 import swiperGoods from '@/components/swiperGoods'
 import brands from '@/components/brands'
 import goodsFloor2 from '@/components/goodsFloor2'
-import footerMenu from '@/components/footerMenu'
 
 export default {
   data () {
@@ -126,8 +125,7 @@ export default {
     onePic,
     swiperGoods,
     brands,
-    goodsFloor2,
-    footerMenu
+    goodsFloor2
   }
 }
 </script>
