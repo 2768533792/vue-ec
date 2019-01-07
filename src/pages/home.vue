@@ -49,9 +49,9 @@
       </div>
       <goods-floor :goods="mustbuy"></goods-floor>
       <seckill :seckill-goods="seckillGoods" v-if="seckillGoods[0]"></seckill>
-      <swiper-goods :data="swiperGoods1"></swiper-goods>
-      <swiper-goods :data="swiperGoods2"></swiper-goods>
-      <swiper-goods :data="swiperGoods3"></swiper-goods>
+      <swiper-goods :data="swiperGoods1" v-if="swiperGoods1.goods"></swiper-goods>
+      <swiper-goods :data="swiperGoods2" v-if="swiperGoods2.goods"></swiper-goods>
+      <swiper-goods :data="swiperGoods3" v-if="swiperGoods3.goods"></swiper-goods>
       <brands></brands>
       <one-pic :pic="adPic01"></one-pic>
       <goods-floor2 :goods="goodsList"></goods-floor2>

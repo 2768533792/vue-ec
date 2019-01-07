@@ -4,7 +4,7 @@
     <section class="container category-container">
       <div class="left" ref="left">
         <ul>
-          <li v-for="(item, index) in left" :key="index" :class="{current:currentIndex===index}" @click="selectMenu(index, $event)"><span class="left-item">{{item}}</span></li>
+          <li v-for="(item, index) in level1" :key="index" :class="{current:currentIndex===index}" @click="selectMenu(index, $event)"><span class="left-item">{{item.cat_name}}</span></li>
         </ul>
       </div>
       <div class="right" ref="right">
@@ -33,6 +33,7 @@ import BScroll from 'better-scroll'
 export default {
   data () {
     return {
+      level1: [],
       left: ['女装', '男装', '女包'],
       right: [
         {
@@ -122,6 +123,9 @@ export default {
     }
   },
   created () {
+    this.getCategory(14).then((res) => {
+      console.log(res)
+    })
     this.$nextTick(() => {
       this._initScroll()
       this._getHeight()
@@ -144,6 +148,19 @@ export default {
     }
   },
   methods: {
+    getCategory (parentId) {
+      return new Promise((resolve, reject) => {
+        this.$ajax.get('http://localhost:3000/category/', {
+          params: {
+            parentId: parentId
+          }
+        }).then((res) => {
+          resolve(res)
+        }).catch(function (error) {
+          reject(error)
+        })
+      })
+    },
     selectMenu (index, event) {
       if (!event._constructed) {
         return
