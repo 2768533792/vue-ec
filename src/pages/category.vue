@@ -1,22 +1,20 @@
 <template>
   <div class="category">
     <header class="header">分类</header>
-    <section class="container category-container">
+    <section class="container category-container" v-show="categoryData">
       <div class="left" ref="left">
         <ul>
-          <li v-for="(item, index) in level1" :key="index" :class="{current:currentIndex===index}" @click="selectMenu(index, $event)"><span class="left-item">{{item.cat_name}}</span></li>
+          <li v-for="(item, index) in categoryData" :key="index" :class="{current:catIndex===index}" @click="levelOneFn(index)"><span class="left-item">{{item.cat_name}}</span></li>
         </ul>
       </div>
       <div class="right" ref="right">
         <ul>
-          <li class="right-item right-item-hook" v-for="(item, index) in right" :key="index">
-            <h1 class="title">{{item.name}}</h1>
-            <ul class="third-menu">
-              <li v-for="(subitem, index) in item.content" :key="index">
-                <router-link :to="{ name: 'list', params: { listId: subitem.id}}">
-                  <img :src="subitem.url" :alt="subitem.text">
-                  <div class="category-tag-name">{{subitem.text}}</div>
-                </router-link>
+          <li v-if="categoryData[catIndex].children" class="right-item right-item-hook" v-for="(item, index) in categoryData[catIndex].children" :key="index">
+            <h1 class="title">{{item.cat_name}}</h1>
+            <ul class="third-menu" v-if="item.children">
+              <li v-for="(subItem, index) in item.children" :key="index" @click="toList(subItem.cat_id, subItem.cat_name)">
+                <div class="cat-logo-wrapper"><img :src="subItem.cat_logo" :alt="subItem.cat_name"></div>
+                <div class="category-tag-name">{{subItem.cat_name}}</div>
               </li>
             </ul>
           </li>
@@ -33,174 +31,92 @@ import BScroll from 'better-scroll'
 export default {
   data () {
     return {
-      level1: [],
-      left: ['女装', '男装', '女包'],
-      right: [
+      categoryData: [
         {
-          name: '女装',
-          content: [
-            {
-              id: '01',
-              url: require('@/assets/images/category-img.jpg'),
-              text: '连衣裙'
-            },
-            {
-              id: '02',
-              url: require('@/assets/images/category-img.jpg'),
-              text: '外套'
-            },
-            {
-              id: '03',
-              url: require('@/assets/images/category-img.jpg'),
-              text: '羽绒服'
-            },
-            {
-              id: '04',
-              url: require('@/assets/images/category-img.jpg'),
-              text: '羊绒衫'
-            }
-          ]
-        },
-        {
-          name: '男装',
-          content: [
-            {
-              id: '05',
-              url: require('@/assets/images/category-img.jpg'),
-              text: '衬衫'
-            },
-            {
-              id: '06',
-              url: require('@/assets/images/category-img.jpg'),
-              text: '裤装'
-            },
-            {
-              id: '07',
-              url: require('@/assets/images/category-img.jpg'),
-              text: '针织衫'
-            },
-            {
-              id: '08',
-              url: require('@/assets/images/category-img.jpg'),
-              text: '棉衣'
-            },
-            {
-              id: '09',
-              url: require('@/assets/images/category-img.jpg'),
-              text: '西服'
-            }
-          ]
-        },
-        {
-          name: '女包',
-          content: [
-            {
-              id: '10',
-              url: require('@/assets/images/category-img.jpg'),
-              text: '双肩包'
-            },
-            {
-              id: '11',
-              url: require('@/assets/images/category-img.jpg'),
-              text: '单肩包'
-            },
-            {
-              id: '12',
-              url: require('@/assets/images/category-img.jpg'),
-              text: '手提包'
-            },
-            {
-              id: '13',
-              url: require('@/assets/images/category-img.jpg'),
-              text: '小钱包'
-            }
-          ]
+          children: []
         }
       ],
-      listHeight: [],
-      scrollY: 0 // 实时获取当前Y轴高度
-      // clickEvent: false
+      catIndex: 0,
+      catLogoDefault: require('@/assets/images/cat_logo_default.jpg')
     }
   },
   created () {
-    this.getCategory(14).then((res) => {
-      console.log(res)
-    })
-    this.$nextTick(() => {
-      this._initScroll()
-      this._getHeight()
-    })
-  },
-  computed: {
-    // 计算属性
-    currentIndex () {
-      for (let i = 0; i < this.listHeight.length; i++) {
-        let height = this.listHeight[i]
-        let height2 = this.listHeight[i + 1]
-        // 当height2不存在的时候，或者落在height和height2之间的时候，直接返回当前索引
-        // >=height,是因为一开始this.scrollY=0,height=0
-        if (!height2 || (this.scrollY >= height && this.scrollY < height2)) {
-          return i
-        }
-      }
-      // 如果this.listHeight没有的话，就返回0
-      return 0
-    }
-  },
-  methods: {
-    getCategory (parentId) {
-      return new Promise((resolve, reject) => {
-        this.$ajax.get('http://localhost:3000/category/', {
-          params: {
-            parentId: parentId
-          }
-        }).then((res) => {
-          resolve(res)
-        }).catch(function (error) {
-          reject(error)
+    this.$ajax.get('http://localhost:3000/category/').then((res) => {
+      const data = res.data
+      // 过滤出一级分类
+      let levelOne = data.filter((item) => {
+        return item.level === '1'
+      })
+      // 过滤出二级分类
+      levelOne.forEach((e) => {
+        let levelTwo = data.filter((item) => {
+          return item.parent_id === e.cat_id
+        })
+        e.children = levelTwo
+        levelTwo.forEach((f) => {
+          let levelThree = data.filter((item) => {
+            return item.parent_id === f.cat_id
+          })
+          levelThree.forEach((g) => {
+            if (!g.cat_logo) {
+              g.cat_logo = this.catLogoDefault
+            }
+          })
+          f.children = levelThree
         })
       })
-    },
-    selectMenu (index, event) {
-      if (!event._constructed) {
-        return
-      }
-      let rightItems = this.$refs.right.getElementsByClassName('right-item-hook')
-      let el = rightItems[index]
-      this.rights.scrollToElement(el, 300)
+      this.categoryData = levelOne
+      console.log(this.categoryData)
+      this.$nextTick(() => {
+        this.updated()
+        this._initScroll()
+      })
+    }).catch(function (error) {
+      console.log(error)
+    })
+  },
+  methods: {
+    toList (catId, catName) {
+      this.$router.push({
+        // path: `/list/${catId}`
+        path: 'list',
+        query: {
+          catId: catId,
+          catName: catName
+        }
+      })
     },
     _initScroll () {
       this.lefts = new BScroll(this.$refs.left, {
         click: true
       })
       this.rights = new BScroll(this.$refs.right, {
-        click: true,
-        probeType: 3 // 探针的效果，实时获取滚动高度
-      })
-      // secondMenuScroll对象监听事件，实时获取位置pos.y
-      this.rights.on('scroll', (pos) => {
-        this.scrollY = Math.abs(Math.round(pos.y))
+        click: true
       })
     },
-    _getHeight () {
-      let rightItems = this.$refs.right.getElementsByClassName('right-item-hook')
-      let height = 0
-      this.listHeight.push(height)
-      for (let i = 0; i < rightItems.length; i++) {
-        let item = rightItems[i]
-        height += item.clientHeight
-        this.listHeight.push(height)
-      }
+    // 2019-1-7新增
+    levelOneFn (index) {
+      this.catIndex = index
+      this.$nextTick(() => {
+        this.rights.refresh()
+        this.updated()
+        this.rights.scrollToElement(this.$refs.right, 300)
+      })
     },
-    selectItem (index, event) {
-      // this.clickEvent = true
-      // 在better-scroll的派发事件的event和普通浏览器的点击事件event有个属性区别_constructed,浏览器原生点击事件没有_constructed所以当浏览器监听到该属性的时候return掉
-      if (!event._constructed) {
-        return false
-      } else {
-        let rightItems = this.$refs.right.getElementsByClassName('right-item-hook')
-        let el = rightItems[index]
-        this.rights.scrollToElement(el, 300)
+    updated () {
+      // 滚动条图片未加载完成时高度计算问题
+      let img = this.$refs.right.getElementsByTagName('img')
+      let count = 0
+      let length = img.length
+      if (length) {
+        let timer = setInterval(() => {
+          if (count === length) {
+            this.rights.refresh()
+            clearInterval(timer)
+          } else if (img[count].complete) {
+            count++
+          }
+        }, 100)
       }
     }
   }
@@ -214,7 +130,8 @@ export default {
   position: absolute;
   width: 100%;
   top: 50px;
-  bottom: 46px;
+  bottom: 56px;
+  padding-top: 0;
   overflow: hidden;
   background: #f5f5f5;
   .left {
@@ -255,7 +172,6 @@ export default {
       .third-menu {
         display: flex;
         flex-wrap: wrap;
-        // justify-content: center;
         width: 94%;
         margin: 0 auto;
         flex-wrap: wrap;
@@ -263,11 +179,23 @@ export default {
           box-sizing: border-box;
           padding: 5px 1%;
           width: 33.3%;
-          > a {
-            display: block;
+          line-height: 24px;
+          text-align: center;
+          .cat-logo-wrapper {
             width: 100%;
-            line-height: 24px;
-            text-align: center;
+            height: 50px;
+            overflow: hidden;
+            border-radius: 3px;
+            margin-bottom: 5px;
+            position: relative;
+            background-color: #e2e2e2;
+            img {
+              width: 100%;
+              position: absolute;
+              top: 50%;
+              left: 0;
+              transform: translateY(-50%);
+            }
           }
         }
       }

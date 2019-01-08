@@ -1,78 +1,91 @@
 <template>
   <div class="list">
-    <header class="header"><a href="javascript:;" class="back" @click="back">&lt; 返回</a>列表</header>
+    <header class="header"><a href="javascript:;" class="header-left back" @click="back">&lt; 返回</a>{{cat_name}}</header>
     <section class="container">
-      <ul class="list-ul">
-        <li v-for="(good, index) in goods" :key="index" @click="selectGood(good.id)">
-          <div class="list-item">
-            <div class="goods-img"><img :src="good.image" :alt="good.title"></div>
-            <div class="goods-info">
-              <h3 class="goods-title">{{good.title}}</h3>
-              <div class="goods-tags">
-                <span class="tag" v-for="(tag, index) in good.tags" :key="index">{{tag}}</span>
-              </div>
-              <div class="item-bottom">
-                <span class="goods-price">￥{{good.price}}</span>
-                <span class="goods-rate-num">评价 {{good.rates}}</span>
+      <div class="scroll-wrapper" ref="listScroll" :style="scrollWrapperStyle">
+        <ul class="list-ul">
+          <li v-for="(goods, index) in goodsData" :key="index" @click="toGoods(goods.item_id)">
+            <div class="list-item">
+              <div class="goods-img"><img :src="goods.image_default_id" :alt="goods.title"></div>
+              <div class="goods-info">
+                <h3 class="goods-title">{{goods.title}}</h3>
+                <div class="item-bottom">
+                  <span class="goods-price">￥{{goods.price}}</span>
+                  <!-- <span class="goods-rate-num">评价 {{goods.rates}}</span> -->
+                </div>
               </div>
             </div>
-          </div>
-        </li>
-      </ul>
+          </li>
+        </ul>
+      </div>
     </section>
   </div>
 </template>
 <script>
-import router from '@/router'
+import BScroll from 'better-scroll'
 
 export default {
   data () {
     return {
-      goods: [
-        {
-          id: '01',
-          title: 'ONLY秋装新品纯棉宽松钉珠装饰针织连衣裙女',
-          image: require('@/assets/images/goods-pic1.jpg'),
-          tags: ['免邮', '满减', '双11'],
-          price: '299.00',
-          rates: 65
-        },
-        {
-          id: '02',
-          title: '夏季新品欧美风圆领无袖雪纺连衣裙',
-          image: require('@/assets/images/goods-pic2.jpg'),
-          tags: ['免邮', '满减'],
-          price: '199.00',
-          rates: 99
-        },
-        {
-          id: '03',
-          title: 'etam艾格时尚修身连衣裙',
-          image: require('@/assets/images/goods-pic3.jpg'),
-          tags: ['免邮', '满减'],
-          price: '499.00',
-          rates: 4
-        },
-        {
-          id: '04',
-          title: '艾格 ETAM 彩色数码印花无袖连衣裙',
-          image: require('@/assets/images/goods-pic4.jpg'),
-          tags: ['免邮', '满减'],
-          price: '399.00',
-          rates: 12
-        }
-      ]
+      routeParams: null,
+      cat_id: '',
+      cat_name: '',
+      goodsData: [],
+      scrollWrapperStyle: {
+        height: (window.screen.height - 50) + 'px'
+      }
     }
+  },
+  created () {
+    console.log(this.$route)
+    this.cat_id = this.$route.query.catId
+    this.cat_name = this.$route.query.catName
+    this.$ajax.get('http://localhost:3000/items', {
+      params: {
+        catId: this.cat_id
+      }
+    }).then((res) => {
+      this.goodsData = res.data
+      console.log(this.goodsData)
+      this.$nextTick(() => {
+        this.updated()
+        this.listScroll = new BScroll(this.$refs.listScroll, {
+          click: true
+        })
+        console.log(this.listScroll)
+      })
+    }).catch((error) => {
+      console.log(error)
+    })
   },
   methods: {
     back: function () {
       this.$router.go(-1)
     },
-    selectGood (id) {
-      router.push({
+    toGoods (id) {
+      this.$router.push({
         path: 'detail',
-        query: {detailId: id}
+        query: {
+          itemId: id,
+          catName: this.cat_name
+        }
       })
+    },
+    updated () {
+      // 滚动条图片未加载完成时高度计算问题
+      let img = this.$refs.listScroll.getElementsByTagName('img')
+      let count = 0
+      let length = img.length
+      if (length) {
+        let timer = setInterval(() => {
+          if (count === length) {
+            this.listScroll.refresh()
+            clearInterval(timer)
+          } else if (img[count].complete) {
+            count++
+          }
+        }, 100)
+      }
     }
   }
 }
@@ -80,6 +93,13 @@ export default {
 
 <style lang="scss" scoped>
 .list {
+  .container {
+    position: relative;
+    .scroll-wrapper {
+      height: 100%;
+      position: absolute;
+    }
+  }
   .list-ul {
     li {
       background: #fff;
@@ -98,11 +118,16 @@ export default {
       }
     }
     .goods-info {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
       width: 100%;
+      padding: 10px 0;
       .goods-title {
         color: #333;
         font-size: 14px;
         margin-bottom: 6px;
+        line-height: 22px;
       }
       .goods-tags {
         margin-bottom: 12px;
@@ -120,6 +145,7 @@ export default {
         color: red;
         font-size: 16px;
         width: 100%;
+        text-align: right;
       }
       .goods-rate-num {
         flex: 0 0 80px;

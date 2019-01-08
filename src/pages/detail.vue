@@ -1,20 +1,24 @@
 <template>
   <div class="detail">
-    <header class="header"><a href="javascript:;" class="back" @click="back">&lt; 返回</a>商品详情</header>
+    <header class="header"><a href="javascript:;" class="header-left back" @click="back">&lt; 返回</a>商品详情</header>
     <section class="container">
       <div class="swiper-box">
-        <swiper :option="swiperOption" class="swiper">
-          <swiper-slide v-for="(item, index) in goodsPic" :key="index">
-            <img :src="item.src" :alt="item.title">
+        <swiper :options="swiperOption" class="swiper">
+          <swiper-slide v-for="(item, index) in listImages" :key="index">
+            <img :src="item">
           </swiper-slide>
           <div class="swiper-pagination" slot="pagination"></div>
         </swiper>
       </div>
       <div class="goods-info">
-        <div class="goods-title">艾格 ETAM 彩色数码印花无袖连衣裙</div>
-        <div class="flex">
-          <span class="goods-price"><em class="cur">￥</em>199.00</span>
-          <a href="#" class="btn-fav" :class="{ 'has-fav' : fav }" @click="collect"><i class="iconfont icon-shoucang"></i> {{ fav ? '已收藏': '收藏'}}</a>
+        <div class="goods-title">{{goods.title}}</div>
+        <div class="goods-subtitle">{{goods.sub_title}}</div>
+        <div class="flex" style="line-height: 24px;">
+          <div>
+            <span class="goods-price"><em class="cur">￥</em>{{goods.price}}</span>
+            <span class="mkt-price">市场价：￥{{goods.mkt_price}}</span>
+          </div>
+          <a href="javascript:;" class="btn-fav" :class="{ 'has-fav' : fav }" @click="collect"><i class="iconfont icon-shoucang"></i> {{ fav ? '已收藏': '收藏'}}</a>
         </div>
       </div>
       <div class="checked-params flex">
@@ -58,19 +62,19 @@
       <div class="goods-desc flex">
         <dl>
           <dt>品牌：</dt>
-          <dd>圣罗兰</dd>
+          <dd>{{brand}}</dd>
         </dl>
         <dl>
           <dt>分类：</dt>
-          <dd>面霜</dd>
+          <dd>{{catName}}</dd>
         </dl>
         <dl>
-          <dt>功效：</dt>
-          <dd>补水 保湿 滋润</dd>
+          <dt>货号：</dt>
+          <dd>{{goods.bn}}</dd>
         </dl>
         <dl>
-          <dt>产地：</dt>
-          <dd>中国 上海</dd>
+          <dt>重量：</dt>
+          <dd>{{goods.weight}}kg</dd>
         </dl>
       </div>
       <div class="goods-show">
@@ -78,13 +82,36 @@
           <li class="li-tab" v-for="(item, index) in tabsParam" :key="index" @click="toggleTabs(index)" :class="{active: index == nowIndex}">{{item}}</li>
         </ul>
         <div class="divTab" v-show="nowIndex===0">
-          <detail-show></detail-show>
+          <div class="detail-show">
+            <img v-for="(item, index) in listImages" :key="index" :src="item">
+          </div>
         </div>
         <div class="divTab" v-show="nowIndex===1">
           <detail-rates></detail-rates>
         </div>
         <div class="divTab" v-show="nowIndex===2">
-          <detail-params></detail-params>
+          <div class="detail-params">
+            <dl>
+              <dt>商品名：</dt>
+              <dd>{{goods.title}}</dd>
+            </dl>
+            <dl>
+              <dt>品牌：</dt>
+              <dd>{{brand}}</dd>
+            </dl>
+            <dl>
+              <dt>分类：</dt>
+              <dd>{{catName}}</dd>
+            </dl>
+            <dl>
+              <dt>货号：</dt>
+              <dd>{{goods.bn}}</dd>
+            </dl>
+            <dl>
+              <dt>重量：</dt>
+              <dd>{{goods.weight}}kg</dd>
+            </dl>
+          </div>
         </div>
       </div>
     </section>
@@ -105,25 +132,12 @@ import detailParams from '@/pages/detail/detailParams'
 export default {
   data () {
     return {
+      itemId: '',
       swiperOption: {
         pagination: {
           el: '.swiper-pagination'
         }
       },
-      goodsPic: [
-        {
-          title: '图1',
-          src: require('@/assets/images/goods-pic1.jpg')
-        },
-        {
-          title: '图2',
-          src: require('@/assets/images/goods-pic2.jpg')
-        },
-        {
-          title: '图3',
-          src: require('@/assets/images/goods-pic3.jpg')
-        }
-      ],
       tabsParam: ['商品信息', '商品评论', '商品参数'],
       nowIndex: 0,
       fav: 0,
@@ -133,10 +147,53 @@ export default {
       specColor: '',
       specSize: '',
       quantity: 0,
-      stock: 9
+      stock: 9,
+      goods: {},
+      brand: '',
+      catName: '',
+      listImages: []
+      // itemDesc: ''
     }
   },
+  created () {
+    console.log(this.$route)
+    this.itemId = this.$route.query.itemId
+    this.catName = this.$route.query.catName
+    console.log(this.itemId)
+    this.$ajax.get('http://localhost:3000/items', {
+      params: {
+        itemId: this.itemId
+      }
+    }).then((res) => {
+      console.log(res.data[0])
+      this.goods = res.data[0]
+      var listImagesData = res.data[0].list_image
+      this.listImages = listImagesData.split(',')
+      console.log(this.listImages)
+      this.getBrand(this.goods.brand_id)
+      // this.getItemDesc(this.goods.item_id)
+    })
+  },
   methods: {
+    getBrand (brandId) {
+      this.$ajax.get('http://localhost:3000/brand', {
+        params: {
+          brandId: brandId
+        }
+      }).then((res) => {
+        this.brand = res.data[0].brand_name
+      })
+    },
+    getItemDesc (itemId) {
+      this.$ajax.get('http://localhost:3000/itemDesc', {
+        params: {
+          itemId: itemId
+        }
+      }).then((res) => {
+        console.log(res.data[0])
+        this.itemDesc = res.data[0].wap_desc
+      })
+    },
     back: function () {
       this.$router.go(-1)
     },
@@ -198,8 +255,17 @@ export default {
 <style lang="scss" scoped>
 .detail {
   padding-bottom: 44px;
+  .pic-wrapper {
+    margin-bottom: 10px;
+    img {
+      width: 100%;
+    }
+  }
   .swiper-box {
-    margin-bottom: 15px;
+    margin-bottom: 10px;
+    img {
+      width: 100%;
+    }
   }
   .goods-info {
     margin-bottom: 15px;
@@ -219,9 +285,13 @@ export default {
     }
   }
   .goods-title {
-    margin-bottom: 15px;
+    margin-bottom: 10px;
     color: #333;
     font-size: 18px;
+  }
+  .goods-subtitle {
+    margin-bottom: 15px;
+    color: #999;
   }
   .goods-price {
     color: red;
@@ -231,6 +301,11 @@ export default {
       font-size: 14px;
       font-style: normal;
     }
+  }
+  .mkt-price {
+    text-decoration: line-through;
+    color: #aaa;
+    margin-left: 5px;
   }
   .checked-params {
     padding: 12px;
@@ -362,6 +437,34 @@ export default {
   }
   .gray {
     color: #aaa;
+  }
+}
+.detail-show {
+  img {
+    display: block;
+    width: 100%;
+  }
+}
+.detail-params {
+  margin: 10px auto;
+  width: 94%;
+  background: #fff;
+  dl {
+    display: flex;
+    line-height: 24px;
+    color: #666;
+    padding: 5px 10px;
+    &:not(:last-child) {
+      border-bottom: 1px solid #eee;
+    }
+    dt {
+      flex: 0 0 22%;
+      width: 22%;
+      margin-right: 1%;
+    }
+    dd {
+      color: #aaa;
+    }
   }
 }
 </style>

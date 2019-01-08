@@ -5,12 +5,13 @@ const connection = require('../mysql')
 router.get('/', function(req, res, next) {
   var res = res
   var req = req
-  var sql = "select cat_id, parent_id, cat_name, cat_logo, level from syscategory_cat where cat_id<100"
+  var sql = "select item_id, wap_desc from sysitem_item_desc where item_id=" + req.query.itemId
   connection.query(sql, function(err, rows, fields) {
     if (err) {
       console.log('[query] - :' + err)
       return
     }
+    console.log(rows)
     res.send(rows)
   })
 })

@@ -9,11 +9,15 @@ body {
   background-color: #2fc86d;
 }
 .header {
-  text-align: center;
+  position: fixed;
+  top: 0;
+  width: 100%;
   height: 42px;
   line-height: 42px;
   background-color: white;
   border-bottom: 1px solid #eee;
+  text-align: center;
+  z-index: 3;
 }
 .header-left {
   position: absolute;
@@ -28,4 +32,40 @@ body {
   -webkit-background-size: contain;
      -moz-background-size: contain;
           background-size: contain;
+}
+.container {
+  padding-top: 50px;
+}
+.flex {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+.spec-wrapper {
+  position: fixed;
+  bottom: 0;
+  z-index: 10;
+  -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+          box-sizing: border-box;
+  width: 100%;
+  height: 400px;
+  padding: 10px;
+  background: #fff;
+  .pop-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+  }
+}
+.mask {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 9;
+  background: rgba(0, 0, 0, 0.65);
 }

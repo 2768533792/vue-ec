@@ -27,12 +27,12 @@ export default new Router({
       component: category
     },
     {
-      path: '/list/:listId',
+      path: '/list',
       name: 'list',
       component: list
     },
     {
-      path: '/detail/:detailId',
+      path: '/detail',
       name: 'detail',
       component: detail
     },
