@@ -1,6 +1,6 @@
 <template>
   <div class="detail">
-    <header class="header"><a href="javascript:;" class="header-left back" @click="back">&lt; 返回</a>商品详情</header>
+    <header class="header"><a href="javascript:;" class="header-left back" @click="$router.back(-1)">&lt; 返回</a>商品详情</header>
     <section class="container">
       <div class="swiper-box">
         <swiper :options="swiperOption" class="swiper">
@@ -119,6 +119,12 @@
       <button class="btn-addcart" @click="addCart">加入购物车</button>
       <button class="btn-fastbuy" @click="fastBuy">立即购买</button>
     </footer>
+    <transition enter-active-class="animated fadeIn" leave-active-class="animated fadeOut" :duration="200">
+      <div class="mask" v-show="cartModalShow"></div>
+    </transition>
+    <transition enter-active-class="animated fadeIn" leave-active-class="animated fadeOut" :duration="200">
+      <cart-modal v-show="cartModalShow" @close="closeCartModal"></cart-modal>
+    </transition>
   </div>
 </template>
 <script>
@@ -128,6 +134,7 @@ import { swiper, swiperSlide } from 'vue-awesome-swiper'
 import detailShow from '@/pages/detail/detailShow'
 import detailRates from '@/pages/detail/detailRates'
 import detailParams from '@/pages/detail/detailParams'
+import cartModal from '@/pages/detail/cartModal'
 
 export default {
   data () {
@@ -151,25 +158,23 @@ export default {
       goods: {},
       brand: '',
       catName: '',
-      listImages: []
-      // itemDesc: ''
+      listImages: [],
+      cartModalShow: false,
+      testShow: false
+      // itemDesc: '',
     }
   },
   created () {
-    console.log(this.$route)
     this.itemId = this.$route.query.itemId
     this.catName = this.$route.query.catName
-    console.log(this.itemId)
     this.$ajax.get('http://localhost:3000/items', {
       params: {
         itemId: this.itemId
       }
     }).then((res) => {
-      console.log(res.data[0])
       this.goods = res.data[0]
       var listImagesData = res.data[0].list_image
       this.listImages = listImagesData.split(',')
-      console.log(this.listImages)
       this.getBrand(this.goods.brand_id)
       // this.getItemDesc(this.goods.item_id)
     })
@@ -190,12 +195,8 @@ export default {
           itemId: itemId
         }
       }).then((res) => {
-        console.log(res.data[0])
         this.itemDesc = res.data[0].wap_desc
       })
-    },
-    back: function () {
-      this.$router.go(-1)
     },
     toggleTabs: function (index) {
       this.nowIndex = index
@@ -236,10 +237,21 @@ export default {
       }
     },
     addCart: function () {
-      alert('加入购物车成功')
+      this.cartModalShow = true
     },
     fastBuy: function () {
       alert('正在进入结算页面…')
+    },
+    closeCartModal: function () {
+      this.cartModalShow = false
+    },
+    toCart () {
+      this.$router.push({
+        path: 'cart'
+      })
+    },
+    closeModal () {
+      this.cartModalShow = false
     }
   },
   components: {
@@ -247,7 +259,8 @@ export default {
     swiperSlide,
     detailShow,
     detailRates,
-    detailParams
+    detailParams,
+    cartModal
   }
 }
 </script>

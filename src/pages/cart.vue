@@ -1,7 +1,7 @@
 <template>
   <div class="cart">
     <header class="header">
-      <router-link :to="{path: '/'}" class="header-left" ><i class="icon-back"></i></router-link>
+      <a href="javascript:;" class="header-left back" @click="$router.back(-1)">&lt; 返回</a>
       购物车
       <span class="btn-edit" @click="edit" v-if="editStatus">完成</span>
       <span class="btn-edit" @click="edit" v-else>编辑</span>
@@ -137,7 +137,6 @@ export default {
 <style lang="scss" scoped>
 .cart {
   header {
-    position: relative;
     .btn-edit {
       position: absolute;
       right: 10px;

@@ -9,11 +9,18 @@ import '@/assets/styles/common.scss'
 import '@/assets/iconfont/iconfont.css'
 import VueAwesomeSwiper from 'vue-awesome-swiper'
 import axios from 'axios'
+import VueCookies from 'vue-cookies'
+import Toast from '@/components/Toast/index'
+import '@/components/Toast/toast.css'
+import animate from 'animate.css'
 
 import footerMenu from '@/components/footerMenu/index'
 
 Vue.use(VueAwesomeSwiper)
 Vue.use(footerMenu)
+Vue.use(VueCookies)
+Vue.use(Toast)
+Vue.use(animate)
 Vue.prototype.$ajax = axios
 
 Vue.prototype.goBack = function () {

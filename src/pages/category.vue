@@ -86,6 +86,15 @@ export default {
         }
       })
     },
+    // toList (catId, catName) {
+    //   this.$router.push({
+    //     name: 'list',
+    //     params: {
+    //       catId: catId,
+    //       catName: catName
+    //     }
+    //   })
+    // },
     _initScroll () {
       this.lefts = new BScroll(this.$refs.left, {
         click: true

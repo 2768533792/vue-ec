@@ -1,6 +1,6 @@
 <template>
   <div class="list">
-    <header class="header"><a href="javascript:;" class="header-left back" @click="back">&lt; 返回</a>{{cat_name}}</header>
+    <header class="header"><a href="javascript:;" class="header-left back" @click="$router.back(-1)">&lt; 返回</a>{{cat_name}}</header>
     <section class="container">
       <div class="scroll-wrapper" ref="listScroll" :style="scrollWrapperStyle">
         <ul class="list-ul">
@@ -59,9 +59,6 @@ export default {
     })
   },
   methods: {
-    back: function () {
-      this.$router.go(-1)
-    },
     toGoods (id) {
       this.$router.push({
         path: 'detail',
@@ -93,13 +90,6 @@ export default {
 
 <style lang="scss" scoped>
 .list {
-  .container {
-    position: relative;
-    .scroll-wrapper {
-      height: 100%;
-      position: absolute;
-    }
-  }
   .list-ul {
     li {
       background: #fff;
