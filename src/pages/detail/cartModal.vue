@@ -1,5 +1,5 @@
 <template>
-  <div class="cart-modal">
+  <div class="cart-modal modal-white-bg">
     <div class="msg">加入购物车成功！</div>
     <div class="btns">
       <a href="javascript:;" class="b-r" @click="toCart">进入购物车</a>
@@ -30,14 +30,6 @@ export default {
 
 <style lang="scss" scoped>
 .cart-modal {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  z-index: 10;
-  transform: translate(-50%, -50%);
-  background-color: white;
-  border-radius: 5px;
-  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.3);
   .msg {
     text-align: center;
     padding: 15px;

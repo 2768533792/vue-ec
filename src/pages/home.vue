@@ -101,22 +101,26 @@ export default {
     }
   },
   created () {
-    this.getItems()
+    this.showItems()
   },
   methods: {
     getItems () {
-      this.$ajax.get('http://localhost:3000/items')
-        .then((res) => {
-          const data = res.data
-          this.mustbuy = data.slice(10, 14)
-          this.seckillGoods[0] = data.slice(15, 18)
-          this.seckillGoods[1] = data.slice(19, 22)
-          this.seckillGoods[2] = data.slice(23, 26)
-          this.swiperGoods1.goods = data.slice(1, 18)
-          this.swiperGoods2.goods = data.slice(19, 36)
-          this.swiperGoods3.goods = data.slice(37, 50)
-          this.goodsList = data.slice(1, 7)
-        })
+      return this.$ajax.get('http://localhost:3000/items')
+    },
+    async showItems () {
+      console.log('async:')
+      let res = await this.getItems()
+      if (res.data) {
+        const data = res.data
+        this.mustbuy = data.slice(10, 14)
+        this.seckillGoods[0] = data.slice(15, 18)
+        this.seckillGoods[1] = data.slice(19, 22)
+        this.seckillGoods[2] = data.slice(23, 26)
+        this.swiperGoods1.goods = data.slice(1, 18)
+        this.swiperGoods2.goods = data.slice(19, 36)
+        this.swiperGoods3.goods = data.slice(37, 50)
+        this.goodsList = data.slice(1, 7)
+      }
     }
   },
   components: {

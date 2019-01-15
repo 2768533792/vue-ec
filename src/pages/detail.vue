@@ -120,21 +120,22 @@
       <button class="btn-fastbuy" @click="fastBuy">立即购买</button>
     </footer>
     <transition enter-active-class="animated fadeIn" leave-active-class="animated fadeOut" :duration="200">
-      <div class="mask" v-show="cartModalShow"></div>
+      <div class="mask" v-show="maskShow"></div>
     </transition>
     <transition enter-active-class="animated fadeIn" leave-active-class="animated fadeOut" :duration="200">
       <cart-modal v-show="cartModalShow" @close="closeCartModal"></cart-modal>
+    </transition>
+    <transition enter-active-class="animated fadeIn" leave-active-class="animated fadeOut" :duration="200">
+      <toast v-show="fastBuyShow" msg="正在进入结算..."></toast>
     </transition>
   </div>
 </template>
 <script>
 import 'swiper/dist/css/swiper.css'
 import { swiper, swiperSlide } from 'vue-awesome-swiper'
-// 引入子组件
-import detailShow from '@/pages/detail/detailShow'
 import detailRates from '@/pages/detail/detailRates'
-import detailParams from '@/pages/detail/detailParams'
 import cartModal from '@/pages/detail/cartModal'
+import toast from '@/components/toast'
 
 export default {
   data () {
@@ -160,7 +161,9 @@ export default {
       catName: '',
       listImages: [],
       cartModalShow: false,
-      testShow: false
+      testShow: false,
+      fastBuyShow: false,
+      maskShow: false
       // itemDesc: '',
     }
   },
@@ -237,13 +240,16 @@ export default {
       }
     },
     addCart: function () {
+      this.maskShow = true
       this.cartModalShow = true
     },
     fastBuy: function () {
-      alert('正在进入结算页面…')
+      this.maskShow = true
+      this.fastBuyShow = true
     },
     closeCartModal: function () {
       this.cartModalShow = false
+      this.maskShow = false
     },
     toCart () {
       this.$router.push({
@@ -257,10 +263,9 @@ export default {
   components: {
     swiper,
     swiperSlide,
-    detailShow,
     detailRates,
-    detailParams,
-    cartModal
+    cartModal,
+    toast
   }
 }
 </script>
