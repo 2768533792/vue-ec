@@ -41,8 +41,8 @@ export default {
     }
   },
   created () {
-    this.$ajax.get('http://localhost:3000/category/').then((res) => {
-      const data = res.data
+    this.getCategory().then(res => {
+      const data = res
       // 过滤出一级分类
       let levelOne = data.filter((item) => {
         return item.level === '1'
@@ -71,11 +71,15 @@ export default {
         this.updated()
         this._initScroll()
       })
-    }).catch(function (error) {
-      console.log(error)
     })
   },
   methods: {
+    async getCategory () {
+      let res = await this.$ajax.get('http://localhost:3000/category/')
+      if (res.status === 200) {
+        return res.data
+      }
+    },
     toList (catId, catName) {
       this.$router.push({
         // path: `/list/${catId}`

@@ -14,6 +14,8 @@ import Toast from '@/components/Toast/index'
 import '@/components/Toast/toast.css'
 import animate from 'animate.css'
 
+import store from './store'
+
 import footerMenu from '@/components/footerMenu/index'
 
 Vue.use(VueAwesomeSwiper)
@@ -34,6 +36,7 @@ Vue.config.productionTip = false
 new Vue({
   el: '#app',
   router,
+  store,
   components: {
     App
   },

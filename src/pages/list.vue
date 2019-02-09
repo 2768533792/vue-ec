@@ -40,25 +40,29 @@ export default {
     console.log(this.$route)
     this.cat_id = this.$route.query.catId
     this.cat_name = this.$route.query.catName
-    this.$ajax.get('http://localhost:3000/items', {
-      params: {
-        catId: this.cat_id
-      }
-    }).then((res) => {
-      this.goodsData = res.data
+    this.getItems(this.cat_id).then(res => {
+      console.log(res)
+      this.goodsData = res
       console.log(this.goodsData)
       this.$nextTick(() => {
         this.updated()
         this.listScroll = new BScroll(this.$refs.listScroll, {
           click: true
         })
-        console.log(this.listScroll)
       })
-    }).catch((error) => {
-      console.log(error)
     })
   },
   methods: {
+    async getItems (catId) {
+      let res = await this.$ajax.get('http://localhost:3000/items', {
+        params: {
+          catId: catId
+        }
+      })
+      if (res.status === 200) {
+        return res.data
+      }
+    },
     toGoods (id) {
       this.$router.push({
         path: 'detail',
